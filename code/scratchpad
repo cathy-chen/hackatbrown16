@@ -1,0 +1,25 @@
+<form class="new-node">
+<input class ="node-name" />
+<button type="submit">Submit</button>
+</form>
+
+function newNodeSubmitted(e) {
+	$(".node-name").val
+}
+
+$(document).ready(function() {
+	$(".new-node").on("submit", newNodeSubmitted);
+})
+
+function Node() {
+	return {
+		x: 0
+		y: 0
+		addEdge: function(a) {
+
+		}
+	}
+}
+
+node = Node()
+node.addEdge(a)
