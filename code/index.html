@@ -8,8 +8,7 @@
 	<link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body>
-  <canvas id="viewport" width="800" height="600"></canvas>
-
+  <canvas id="viewport" width="900" height="900"></canvas>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 
   <!-- run from the original source files: -->
@@ -27,8 +26,17 @@
 
   <!-- run from the minified library file: -->
   <script src="../arbor/lib/arbor.js"></script>  
-
   <script src="main.js"></script>
+
+  <form class="new-node">
+    <input class ="node-name" />
+    <button type="submit" class="submit-node">Add Node</button>
+  </form>
+  <form class="new-edge">
+    <input class ="edge-from" />
+    <input class = "edge-to" />
+    <button type="submit" class="submit-edge">Add Edge</button>
+  </form>
 
 </body>
 </html>

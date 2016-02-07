@@ -63,11 +63,11 @@
           // pt:   {x:#, y:#}  node position in screen coords
 
           // draw a rectangle centered at pt
-          var w = node.mass * 5;
+          var w = node.mass* 5 + 20;
           ctx.fillStyle = (node.data.alone) ? "orange" : "black"
           ctx.fillRect(pt.x-w/2, pt.y-w/2, w,w)
 
-          var label = node.name
+          var label = node.name + " " + node.mass
           if (label){
             ctx.font = "12px Helvetica"
             ctx.textAlign = "center"
@@ -142,7 +142,7 @@
       
     }
     return that
-  }    
+  }
 
   $(document).ready(function(){
     var sys = arbor.ParticleSystem(1000, 600, 0.5) // create the system with sensible repulsion/stiffness/friction
@@ -156,20 +156,18 @@
     sys.addEdge('a','e')
     sys.addNode('f', {alone:true, mass:1})
 
-    // or, equivalently:
-    //
-    // sys.graft({
-    //   nodes:{
-    //     f:{alone:true, mass:.25}
-    //   }, 
-    //   edges:{
-    //     a:{ b:{},
-    //         c:{},
-    //         d:{},
-    //         e:{}
-    //     }
-    //   }
-    // })
+    $(".submit-node").live("click", function newNodeSubmitted(e) {
+      console.log("New node submitted!");
+      console.log($(".node-name").val());
+      sys.addNode($(".node-name").val(), {mass:1});
+      return false;
+    });
+
+    $(".submit-edge").live("click", function newEdgeSubmitted(e) {
+      console.log("New edge submitted!");
+      sys.addEdge($(".edge-from").val(), $(".edge-to").val())
+      return false;
+    });
     
   })
 
