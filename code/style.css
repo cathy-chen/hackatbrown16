@@ -1,6 +1,70 @@
+.header{
+	font-family: 'Ubuntu';
+	font-size: 26px;
+	letter-spacing: 4px;
+	background-color: #dbdbda;
+	color: #3abb9d;
+	height: 60px;
+	text-align: left;
+	line-height: 50px;
+	padding-left:40px;
+	padding-top:10px;
+}
+.tagline{
+	font-family: 'Ubuntu';
+	font-size: 16px;
+	font-style: italic;
+	letter-spacing: 0px;
+	color: #7f7f7f;
+	padding-left:20px;
+	padding-top:10px;
+}
+.sidebar{
+	height:690px;
+	width:360px;
+	vertical-align:left;
+	background-color: #edecec;
+}	
+img{
+	height:14px;
+	padding-left:320px;
+	padding-top:30px;
+}
+
+.node-name{
+	height:120px;
+	width:240px;
+}
+
+.submit-node{
+	padding-right: 56px;
+}
+
+.edge-text {
+	padding-left: 56px;
+}
+
+.edge-from {
+	width:240px;
+}
+
+.edge-to {
+	width: 240px;
+}
+
+.submit-edge {
+	padding-right: 56px;
+
+}
+
+.canvas{
+	height:690px;
+
+}
+
 body{
   margin:0;
-  padding:20px;
+  padding:0px;
   font:12px/17px Arial, sans-serif;
   background:#f9f9f9;
 }
