@@ -69,14 +69,15 @@ var socket = io();
 
           // draw a rectangle centered at pt
           var w = node.mass* 5 + 20;
-          ctx.fillStyle = (node.data.alone) ? "orange" : "black"
+          ctx.fillStyle = node.data.color
+          // ctx.fillStyle = (node.data.alone) ? "orange" : "black"
           ctx.fillRect(pt.x-w/2, pt.y-w/2, w,w)
 
           var label = node.name + " " + node.mass
           if (label){
             ctx.font = "12px Helvetica"
             ctx.textAlign = "center"
-            ctx.fillStyle = "white"
+            ctx.fillStyle = "black"
             if (node.data.color=='none') ctx.fillStyle = '#333333'
             ctx.fillText(label||"", pt.x, pt.y+4)
             ctx.fillText(label||"", pt.x, pt.y+4)
@@ -101,13 +102,15 @@ var socket = io();
             if (dragged && dragged.node !== null){
               // while we're dragging, don't let physics move the node
               dragged.node.fixed = true
+
+              // console.log(dragged.node.p.x + " " + _mouseP.x)
+              // if (Math.abs(dragged.node.p.x - _mouseP.x) < 50000) {
+              socket.emit('input', ['increment',dragged.node.name]);
+              // }
             }
 
             $(canvas).bind('mousemove', handler.dragged)
             $(window).bind('mouseup', handler.dropped)
-
-              // increment(selected.node)
-              socket.emit('input', ['increment',dragged.node.name]);
 
             return false
           },
@@ -150,15 +153,14 @@ var socket = io();
     sys.parameters({gravity:true}) // use center-gravity to make the graph settle nicely (ymmv)
     sys.renderer = Renderer("#viewport") // our newly created renderer will have its .init() method called shortly by sys...
 
-    // var wnodes = [];
+    var OUR_COLOURS = ["#d09cd9", "#9ca6d9", "#b19cd9"];
+    var MAX_COLOURS = OUR_COLOURS.length
+    var numNodes = 0;
 
     // add some nodes to the graph and watch it go...
-    // sys.addEdge('a','b')
-    // sys.addEdge('a','c')
-    // sys.addEdge('a','d')
-    // sys.addEdge('a','e')
-    sys.addNode('f', {alone:true, mass:1})
-    sys.addNode('a')
+
+    sys.addNode('f').data.color = "#9ca6d9"
+    sys.addNode('a').data.color = "#b19cd9"
     wnodes['f'] = [];
     wnodes['a'] = [];
 
@@ -182,6 +184,8 @@ var socket = io();
       
       if (msg[0] == 'newvertex') {
         sys.addNode(msg[1], {mass:1});
+        console.log(OUR_COLOURS[numNodes % MAX_COLOURS])
+        sys.getNode(msg[1]).data.color = OUR_COLOURS[numNodes++ % MAX_COLOURS]
         wnodes[msg[1]] = [];
         console.log(wnodes[msg[1]])
       }
@@ -189,14 +193,20 @@ var socket = io();
         sys.addEdge(sys.getNode(msg[1]), sys.getNode(msg[2]))
         console.log(wnodes[$(".edge-from").val()])
         wnodes[msg[1]].push(msg[2])
+        sys.getNode(msg[1]).data.color = sys.getNode(msg[2]).data.color
       }
       else if (msg[0] == 'increment') {
         var node = sys.getNode(msg[1])
 
         function increment (n) {
+          if(list.indexOf(n.name) != -1) return
+          var node = sys.getNode(msg[1])
+
           console.log("Increment " + n.name)
-          n.mass = n.mass + 1
+          if (n.mass < 50) n.mass = n.mass + 1
           n.fixed = true
+          list.push(n.name)
+          console.log("list: " + list);
 
           console.log(wnodes)
           var parents = wnodes[n.name];
@@ -212,6 +222,7 @@ var socket = io();
             }
           }
         }
+        var list = []
         increment(node)
       }
     });
