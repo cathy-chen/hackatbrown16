@@ -37,7 +37,24 @@ img{
 }
 
 .submit-node{
-	padding-right: 40px;
+	padding-right: 56px;
+}
+
+.edge-text {
+	padding-left: 56px;
+}
+
+.edge-from {
+	width:240px;
+}
+
+.edge-to {
+	width: 240px;
+}
+
+.submit-edge {
+	padding-right: 56px;
+
 }
 
 .canvas{
