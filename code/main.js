@@ -6,6 +6,9 @@
 
 (function($){
 
+  var wnodes = [];
+  var sys = arbor.ParticleSystem(1000, 600, 0.5) // create the system with sensible repulsion/stiffness/friction
+
   var Renderer = function(canvas){
     var canvas = $(canvas).get(0)
     var ctx = canvas.getContext("2d");
@@ -82,7 +85,6 @@
       initMouseHandling:function(){
         // no-nonsense drag and drop (thanks springy.js)
         var dragged = null;
-
         var selected = null;
         var nearest = null;
 
@@ -102,11 +104,34 @@
             $(canvas).bind('mousemove', handler.dragged)
             $(window).bind('mouseup', handler.dropped)
 
-            if (selected.node !== null){
-              console.log("Increment " + dragged.node.name)
-              dragged.node.mass = dragged.node.mass + 1
-              dragged.node.fixed = true
-            }
+            // if (selected.node !== null){
+              function increment (n) {
+                // if (n == null) return
+
+                console.log("Increment " + n.name)
+                n.mass = n.mass + 1
+                n.fixed = true
+
+                console.log(wnodes)
+                var parents = wnodes[n.name];
+
+                if (parents == null) console.log("parents is null")
+                else {
+                  console.log("parents: " + parents)
+                  for (var i = 0; i < parents.length; i++) {
+                    console.log("increment " + i);
+                    console.log("parents.length: " + parents.length)
+                    increment(sys.getNode(parents[i]));
+                    console.log("increment has returned")
+                  }
+                }
+                // console.log("Increment " + dragged.node.name)
+                // dragged.node.mass = dragged.node.mass + 1
+                // dragged.node.fixed = true
+              }
+
+              increment(selected.node)
+            // }
 
             return false
           },
@@ -145,31 +170,35 @@
   }
 
   $(document).ready(function(){
-    var sys = arbor.ParticleSystem(1000, 600, 0.5) // create the system with sensible repulsion/stiffness/friction
+    // var sys = arbor.ParticleSystem(1000, 600, 0.5) // create the system with sensible repulsion/stiffness/friction
     sys.parameters({gravity:true}) // use center-gravity to make the graph settle nicely (ymmv)
     sys.renderer = Renderer("#viewport") // our newly created renderer will have its .init() method called shortly by sys...
 
-    var wnodes = [];
+    // var wnodes = [];
 
     // add some nodes to the graph and watch it go...
-    sys.addEdge('a','b')
-    sys.addEdge('a','c')
-    sys.addEdge('a','d')
-    sys.addEdge('a','e')
+    // sys.addEdge('a','b')
+    // sys.addEdge('a','c')
+    // sys.addEdge('a','d')
+    // sys.addEdge('a','e')
     sys.addNode('f', {alone:true, mass:1})
+    sys.addNode('a')
 
     $(".submit-node").live("click", function newNodeSubmitted(e) {
       console.log("New node submitted!");
-      console.log($(".node-name").val());
-      sys.addNode($(".node-name").val(), {mass:1});
-      // wnodes.push(getNode($(".node-name")));
-      // console.log("last line");
+      var node = $(".node-name")
+      console.log(node.val());
+      sys.addNode(node.val(), {mass:1});
+      wnodes[node.val()] = [];
+      console.log("parents: " + wnodes[node.val()]);
       return false;
     });
 
     $(".submit-edge").live("click", function newEdgeSubmitted(e) {
       console.log("New edge submitted!");
       sys.addEdge($(".edge-from").val(), $(".edge-to").val())
+      wnodes[$(".edge-from").val()].push($(".edge-to").val())
+      console.log(wnodes[$(".edge-from").val()])
       return false;
     });
     
