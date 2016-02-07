@@ -6,9 +6,33 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>arbor.js project template</title>
 	<link rel="stylesheet" href="style.css" type="text/css">
+  <link rel="stylesheet" href="https://www.google.com/fonts#UsePlace:use/Collection:Ubuntu" type="text/css">
 </head>
 <body>
-  <canvas id="viewport" width="900" height="900"></canvas>
+<div class="everything">
+<div class="header"> 
+    IDEABACK
+   <span class="tagline">
+   mapping crowdsourced feedback in real-time
+   </span>
+</div>
+<div class="sidebar" style="float: left">
+  <img src="img/arrow.png">
+
+  <form class="new-node">
+    <center><input class ="node-name"/></center>
+    <p class="submit-node" align="right"><button type="submit">Submit</button></p>
+  </form>
+
+  <form class="new-edge">
+    <input class ="edge-from" />
+    <input class = "edge-to" />
+    <button type="submit" class="submit-edge">Add Edge</button>
+  </form>
+
+</div>
+<div class="canvas" style="float: right">
+<canvas id="viewport" width="900" height="690"></canvas>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 
   <!-- run from the original source files: -->
@@ -25,18 +49,12 @@
        <script src="../../src/dev.js"></script> -->
 
   <!-- run from the minified library file: -->
-  <script src="./arbor/lib/arbor.js"></script>  
+  <script src="../arbor/lib/arbor.js"></script>  
   <script src="main.js"></script>
+</div>
+<div class="chart">
 
-  <form class="new-node">
-    <input class ="node-name" />
-    <button type="submit" class="submit-node">Add Node</button>
-  </form>
-  <form class="new-edge">
-    <input class ="edge-from" />
-    <input class = "edge-to" />
-    <button type="submit" class="submit-edge">Add Edge</button>
-  </form>
-
+</div>
+</div>
 </body>
 </html>
