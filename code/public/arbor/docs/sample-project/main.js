@@ -4,12 +4,7 @@
 //  A project template for using arbor.js
 //
 
-var socket = io();
-
 (function($){
-
-  var wnodes = [];
-  var sys = arbor.ParticleSystem(1000, 600, 0.5) // create the system with sensible repulsion/stiffness/friction
 
   var Renderer = function(canvas){
     var canvas = $(canvas).get(0)
@@ -68,27 +63,15 @@ var socket = io();
           // pt:   {x:#, y:#}  node position in screen coords
 
           // draw a rectangle centered at pt
-          var w = node.mass* 5 + 20;
+          var w = 10
           ctx.fillStyle = (node.data.alone) ? "orange" : "black"
           ctx.fillRect(pt.x-w/2, pt.y-w/2, w,w)
-
-          var label = node.name + " " + node.mass
-          if (label){
-            ctx.font = "12px Helvetica"
-            ctx.textAlign = "center"
-            ctx.fillStyle = "white"
-            if (node.data.color=='none') ctx.fillStyle = '#333333'
-            ctx.fillText(label||"", pt.x, pt.y+4)
-            ctx.fillText(label||"", pt.x, pt.y+4)
-          }
         })    			
       },
       
       initMouseHandling:function(){
         // no-nonsense drag and drop (thanks springy.js)
         var dragged = null;
-        var selected = null;
-        var nearest = null;
 
         // set up a handler object that will initially listen for mousedowns then
         // for moves and mouseups while dragging
@@ -96,7 +79,7 @@ var socket = io();
           clicked:function(e){
             var pos = $(canvas).offset();
             _mouseP = arbor.Point(e.pageX-pos.left, e.pageY-pos.top)
-            selected = nearest = dragged = particleSystem.nearest(_mouseP)
+            dragged = particleSystem.nearest(_mouseP);
 
             if (dragged && dragged.node !== null){
               // while we're dragging, don't let physics move the node
@@ -105,9 +88,6 @@ var socket = io();
 
             $(canvas).bind('mousemove', handler.dragged)
             $(window).bind('mouseup', handler.dropped)
-
-              // increment(selected.node)
-              socket.emit('input', ['increment',dragged.node.name]);
 
             return false
           },
@@ -133,7 +113,6 @@ var socket = io();
             _mouseP = null
             return false
           }
-
         }
         
         // start listening
@@ -143,77 +122,35 @@ var socket = io();
       
     }
     return that
-  }
+  }    
 
   $(document).ready(function(){
-    // var sys = arbor.ParticleSystem(1000, 600, 0.5) // create the system with sensible repulsion/stiffness/friction
+    var sys = arbor.ParticleSystem(1000, 600, 0.5) // create the system with sensible repulsion/stiffness/friction
     sys.parameters({gravity:true}) // use center-gravity to make the graph settle nicely (ymmv)
     sys.renderer = Renderer("#viewport") // our newly created renderer will have its .init() method called shortly by sys...
 
-    // var wnodes = [];
-
     // add some nodes to the graph and watch it go...
-    // sys.addEdge('a','b')
-    // sys.addEdge('a','c')
-    // sys.addEdge('a','d')
-    // sys.addEdge('a','e')
-    sys.addNode('f', {alone:true, mass:1})
-    sys.addNode('a')
-    wnodes['f'] = [];
-    wnodes['a'] = [];
+    sys.addEdge('a','b')
+    sys.addEdge('a','c')
+    sys.addEdge('a','d')
+    sys.addEdge('a','e')
+    sys.addNode('f', {alone:true, mass:.25})
 
-    $(".submit-node").live("click", function newNodeSubmitted(e) {
-      console.log("New node submitted!");
-      var node = $(".node-name")
-      console.log(node.val());
-      socket.emit('input', ['newvertex',$(".node-name").val()]);      //        !!!!!!!!!!! add node
-      console.log("parents: " + wnodes[node.val()]);
-      return false;
-    });
-
-    $(".submit-edge").live("click", function newEdgeSubmitted(e) {
-      console.log("New edge submitted!");
-      socket.emit('input', ['newedge',$(".edge-from").val(),$(".edge-to").val()]);      //   !! add edge
-      return false;
-    });
-
-    socket.on('data', function(msg){
-      console.log("we got", msg)
-      
-      if (msg[0] == 'newvertex') {
-        sys.addNode(msg[1], {mass:1});
-        wnodes[msg[1]] = [];
-        console.log(wnodes[msg[1]])
-      }
-      else if (msg[0] == 'newedge') {
-        sys.addEdge(sys.getNode(msg[1]), sys.getNode(msg[2]))
-        console.log(wnodes[$(".edge-from").val()])
-        wnodes[msg[1]].push(msg[2])
-      }
-      else if (msg[0] == 'increment') {
-        var node = sys.getNode(msg[1])
-
-        function increment (n) {
-          console.log("Increment " + n.name)
-          n.mass = n.mass + 1
-          n.fixed = true
-
-          console.log(wnodes)
-          var parents = wnodes[n.name];
-
-          if (parents == null) console.log("parents is null")
-          else {
-            console.log("parents: " + parents)
-            for (var i = 0; i < parents.length; i++) {
-              console.log("increment " + i);
-              console.log("parents.length: " + parents.length)
-              increment(sys.getNode(parents[i]));
-              console.log("increment has returned")
-            }
-          }
-        }
-        increment(node)
-      }
-    });
+    // or, equivalently:
+    //
+    // sys.graft({
+    //   nodes:{
+    //     f:{alone:true, mass:.25}
+    //   }, 
+    //   edges:{
+    //     a:{ b:{},
+    //         c:{},
+    //         d:{},
+    //         e:{}
+    //     }
+    //   }
+    // })
+    
   })
+
 })(this.jQuery)
