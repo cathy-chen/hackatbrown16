@@ -92,7 +92,7 @@
           clicked:function(e){
             var pos = $(canvas).offset();
             _mouseP = arbor.Point(e.pageX-pos.left, e.pageY-pos.top)
-            selected = nearest = dragged = particleSystem.nearest(_mouseP);
+            selected = nearest = dragged = particleSystem.nearest(_mouseP)
 
             if (dragged && dragged.node !== null){
               // while we're dragging, don't let physics move the node
@@ -103,7 +103,7 @@
             $(window).bind('mouseup', handler.dropped)
 
             if (selected.node !== null){
-              console.log("not null");
+              console.log("Increment " + dragged.node.name)
               dragged.node.mass = dragged.node.mass + 1
               dragged.node.fixed = true
             }
@@ -149,6 +149,8 @@
     sys.parameters({gravity:true}) // use center-gravity to make the graph settle nicely (ymmv)
     sys.renderer = Renderer("#viewport") // our newly created renderer will have its .init() method called shortly by sys...
 
+    var wnodes = [];
+
     // add some nodes to the graph and watch it go...
     sys.addEdge('a','b')
     sys.addEdge('a','c')
@@ -160,6 +162,8 @@
       console.log("New node submitted!");
       console.log($(".node-name").val());
       sys.addNode($(".node-name").val(), {mass:1});
+      // wnodes.push(getNode($(".node-name")));
+      // console.log("last line");
       return false;
     });
 
