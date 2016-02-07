@@ -4,7 +4,7 @@
   "description": "Hack@Brown project, a crowdsourced ideation tool",
   "main": "index.js",
   "scripts": {
-    "start": "node code/server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "ejs": "2.3.3",
