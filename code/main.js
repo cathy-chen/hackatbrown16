@@ -193,10 +193,15 @@ var socket = io();
       else if (msg[0] == 'increment') {
         var node = sys.getNode(msg[1])
 
-        function increment (n) {
+        function increment (n, list) {
+          //Return if node has already been incremented ie loop detected
+          if(list.indexOf(n.name) != -1) return
+
           console.log("Increment " + n.name)
           n.mass = n.mass + 1
           n.fixed = true
+          list.push(n.name)
+          console.log("list: " + list);
 
           console.log(wnodes)
           var parents = wnodes[n.name];
@@ -212,6 +217,8 @@ var socket = io();
             }
           }
         }
+
+        var list = []
         increment(node)
       }
     });
